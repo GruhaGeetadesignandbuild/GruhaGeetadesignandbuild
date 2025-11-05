@@ -4,6 +4,17 @@ document.addEventListener('DOMContentLoaded', function () {
   var yrs = document.querySelectorAll('#year, #year2, #year3, #year4');
   yrs.forEach(el => el && (el.textContent = new Date().getFullYear()));
 
+// Optional simple animation or interaction
+window.addEventListener('scroll', () => {
+  const header = document.querySelector('header');
+  if (window.scrollY > 50) {
+    header.style.backgroundColor = '#fff8f0';
+  } else {
+    header.style.backgroundColor = 'transparent';
+  }
+});
+
+
   // Support multiple toggles that share behavior
   var toggles = document.querySelectorAll('[id^="mobile-toggle"]');
   toggles.forEach(t => {
@@ -24,6 +35,36 @@ document.addEventListener('DOMContentLoaded', function () {
       t.setAttribute('aria-expanded', String(!expanded));
     });
   });
+
+// Initialize EmailJS (replace with your user ID)
+emailjs.init("RCTeDp3-4TI2qRUrs");
+
+const form = document.getElementById("contactForm");
+const statusMsg = document.getElementById("form-status");
+
+form.addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  statusMsg.style.display = "block";
+  statusMsg.className = "status-msg";
+  statusMsg.textContent = "Sending message...";
+
+  const serviceID = "service_s0j3ygk";
+  const templateID = "template_e7mrp3k";
+
+  emailjs.sendForm(serviceID, templateID, this)
+    .then(() => {
+      statusMsg.textContent = "Message sent successfully!";
+      statusMsg.classList.add("status-success");
+      form.reset();
+    }, (err) => {
+      console.error(err);
+      statusMsg.textContent = "Error sending message. Try again!";
+      statusMsg.classList.add("status-error");
+    });
+});
+
+
 
 // Simple testimonial navigation placeholder
 const leftArrow = document.querySelector('.left');
@@ -52,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
   // Simple active-nav based on pathname
   var links = document.querySelectorAll('.nav-link');
   links.forEach(a => {
@@ -64,3 +106,4 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {}
   });
 });
+

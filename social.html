@@ -1,22 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Social Icons</title>
-  <link rel="stylesheet" href="social.css">
-
-  <!-- Font Awesome CDN for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Me</title>
+  <link rel="stylesheet" href="social.css" />
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2/dist/email.min.js"></script>
 </head>
 <body>
+  <section id="contact">
+    <div class="container">
+      <h2 class="title">Let's Work Together</h2>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3>Get In Touch</h3>
+          <p>I'm always open to discussing new opportunities, interesting projects, and innovative ideas. Let's connect!</p>
+          
+          <div class="info-item">
+            <i class="icon">📧</i>
+            <a href="mailto:yourmail@example.com">yourmail@example.com</a>
+          </div>
+          <div class="info-item">
+            <i class="icon">📞</i>
+            <a href="tel:+919876543210">+91 9876543210</a>
+          </div>
+          <div class="info-item">
+            <i class="icon">💻</i>
+            <a href="https://github.com/yourgithub" target="_blank">github.com/yourgithub</a>
+          </div>
+          <div class="info-item">
+            <i class="icon">🔗</i>
+            <a href="https://linkedin.com/in/yourlinkedin" target="_blank">linkedin.com/in/yourlinkedin</a>
+          </div>
+        </div>
 
-  <div class="social-container">
-    <a href="https://facebook.com" class="facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-    <a href="https://twitter.com" class="twitter" target="_blank"><i class="fab fa-twitter"></i></a>
-    <a href="https://instagram.com" class="instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="https://linkedin.com" class="linkedin" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-  </div>
+        <div class="contact-form">
+          <div id="form-status" class="status-msg"></div>
 
+          <form id="contactForm">
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Your name" required />
+
+            <label>Email</label>
+            <input type="email" name="email" placeholder="your.email@example.com" required />
+
+            <label>Message</label>
+            <textarea name="message" rows="4" placeholder="Your message..." required></textarea>
+
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="script123.js"></script>
 </body>
 </html>
