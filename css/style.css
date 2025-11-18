@@ -354,7 +354,356 @@ footer {
   font-size: 0.9rem;
 }
 
+/*============before after start ==============*/
 
+/* beforeafter.css - styles for Before/After component 
+:root{
+  --accent:#0b76ff;
+  --radius:24px;
+  --handle-size:70px;
+  --divider-w:3px;
+}
+
+.ba-container{
+  position:relative;
+  overflow:hidden;
+  border-radius:var(--radius);
+  height:420px;
+}
+
+.ba-container img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* After overlay *
+.ba-after{
+  position:absolute;
+  left:0;
+  top:0;
+  height:100%;
+  width:50%;
+  overflow:hidden;
+}
+
+/* Divider line *
+.divider{
+  position:absolute;
+  top:0;
+  left:50%;
+  width:var(--divider-w);
+  height:100%;
+  transform:translateX(-50%);
+  background:linear-gradient(to bottom, rgba(255,255,255,.95), rgba(255,255,255,.65));
+  z-index:50;
+}
+
+/* Handle *
+.handle{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:var(--handle-size);
+  height:var(--handle-size);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:ew-resize;
+}
+
+.handle img.logo{
+  width:54%;
+  height:54%;
+  object-fit:contain;
+  border-radius:50%;
+}
+*/ /*demo*/
+
+/* beforeafter.css
+   Full-width, responsive, mobile-first slider that matches the reference visuals.
+*/
+
+:root{
+  --radius:14px;
+  --divider-width:3px;
+  --handle-size:64px;
+  --label-bg: rgba(0,0,0,0.36);
+  --label-radius:10px;
+  --max-content-width:2200px; /* controls inner max width for extremely large screens */
+}
+
+/* Page layout: full-bleed with centered content and horizontal padding */
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #ffffff;
+  color:#0b1730;
+}
+
+.slider-section{
+  width:100%;
+  padding:28px 28px; /* keep some white space at edges on mobile */
+  box-sizing:border-box;
+}
+
+.ba-container{
+  position:relative;
+  width:100%;
+  max-width:var(--max-content-width);
+  margin:0 auto;
+  height:66vh;              /* responsive height - we'll clamp on very small screens */
+  min-height:360px;
+  border-radius:var(--radius);
+  overflow:hidden;
+  box-shadow:0 10px 44px rgba(0,0,0,0.12);
+  background:#000;
+  touch-action:none;
+}
+
+/* Base & after images - always full cover, no zooming or transforms */
+.ba-container img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  user-select:none;
+  pointer-events:none;
+}
+
+/* Base image sits directly in container */
+.ba-base{position:absolute;inset:0;z-index:1}
+
+/* After overlay clipped by width controlled by JS */
+.ba-after{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:50%;              /* initial reveal 50% */
+  overflow:hidden;
+  z-index:3;
+  transition:width 0.12s linear; /* snappy following, no smooth zoom */
+}
+
+/* Divider line appearance */
+.divider{
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:50%;
+  width:var(--divider-width);
+  transform:translateX(-50%);
+  z-index:22;
+  /* soft white line like reference */
+  background:linear-gradient(to bottom, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+  box-shadow:0 0 0 1px rgba(0,0,0,0.02) inset;
+}
+
+/* Handle: centered circle with logo */
+.handle{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:var(--handle-size);
+  height:var(--handle-size);
+  border-radius:50%;
+  background:linear-gradient(145deg,#f7e9c7,#c9a86a); /* gold-ish base */
+  border:4px solid rgba(255,255,255,0.95);
+  box-shadow:0 10px 30px rgba(11,118,255,0.06), 0 6px 22px rgba(0,0,0,0.22);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:30;
+  cursor:ew-resize;
+  transition:transform .18s ease, left .12s linear;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* make handle accessible by keyboard */
+.handle:focus{ outline:4px solid rgba(11,118,255,0.14); }
+
+/* logo inside handle */
+.handle-logo{
+  width:56%;
+  height:56%;
+  object-fit:contain;
+  border-radius:50%;
+  pointer-events:none;
+}
+
+/* Label styles (translucent rounded boxes) */
+.label{
+  position:absolute;
+  top:18px;
+  padding:10px 16px;
+  background:var(--label-bg);
+  color:#fff;
+  border-radius:var(--label-radius);
+  font-weight:600;
+  font-size:15px;
+  z-index:40;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.label.left{ left:18px; }
+.label.right{ right:18px; }
+
+/* smaller screens tweak */
+@media (max-width:920px){
+  .ba-container{ height:56vh; min-height:320px; }
+  :root{ --handle-size:56px; }
+}
+
+/* mobile-first (narrow widths) */
+@media (max-width:560px){
+  .slider-section{ padding:16px; }
+  .label{ font-size:14px; padding:8px 12px; top:12px; }
+  .ba-container{ height:54vh; min-height:260px; border-radius:12px; }
+  :root{ --handle-size:50px; --divider-width:2px; }
+  .divider{ left:50%; }
+  .handle{ cursor:grab; }
+}
+
+/* ensure very tall screens don't overflow */
+@media (min-height:1500px){
+  .ba-container{ height:920px; }
+}
+
+
+
+/*========== before after end ==========*/
+
+
+/*============testomonial==============*/
+
+body {
+    margin: 0;
+    background: #ffffff;
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Section Wrapper */
+.section {
+    max-width: 1100px;
+    margin: 120px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 45px;
+    color: #B89A63;
+    font-weight: 600;
+    margin-bottom: 50px;
+}
+
+/* Horizontal Slider */
+.h-slider {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+}
+
+/* Slides */
+.h-slide {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateX(100px);
+    transition: all 1s ease;
+}
+
+.h-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.quote {
+    font-size: 20px;
+    max-width: 850px;
+    margin: auto;
+    line-height: 1.7;
+    color:#333;
+}
+
+.name {
+    font-size: 26px;
+    color:#B89A63;
+    margin-top: 20px;
+    font-weight:600;
+}
+
+.role {
+    font-size: 14px;
+    color:#444;
+}
+
+/* Arrows */
+.arrow-h {
+    width: 45px;
+    height: 45px;
+    border: 1px solid #c7a86d;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    position:absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor:pointer;
+    color:#c7a86d;
+    font-size: 22px;
+    transition:0.7s;
+}
+
+.arrow-h:hover {
+    background:#c7a86d;
+    color:#fff;
+}
+
+.left {
+    left: -60px;
+}
+
+.right {
+    right: -60px;
+}
+
+/* Dots */
+.h-dots {
+    margin-top: 40px;
+}
+
+.dot {
+    width: 12px;
+    height:12px;
+    background:#bbb;
+    display:inline-block;
+    margin: 0 6px;
+    border-radius:50%;
+    transition:0.3s;
+}
+
+.dot.active {
+    background:#c7a86d;
+    transform: scale(1.3);
+}
+
+.divider {
+    width: 100%;
+    height:1px;
+    background:#eee;
+    margin:100px 0;
+}
+
+
+/*============testomonial==============*/
 /* ======= Footer Styles ======= */
 .footer {
   background: #fff;
