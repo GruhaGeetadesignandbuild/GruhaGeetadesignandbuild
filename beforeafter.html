@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Luxury Before / After Slider — Component</title>
+  <style>
+    :root{
+      --accent:#0b76ff;
+      --bg:#f6f8fb;
+      --radius:24px;
+      --handle-size:70px;
+      --divider-w:3px;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system,"Segoe UI",Roboto,Arial;margin:28px;background:var(--bg);color:#0b1730}
+    h1{font-size:20px;margin:0 0 10px}
+    p.lead{margin:0 0 18px;opacity:.85}
+
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+
+    /* Slider base */
+    .ba-wrap{max-width:100%;}
+    .ba-container{position:relative;overflow:hidden;border-radius:var(--radius);background:#ddd;box-shadow:0 12px 28px rgba(0,0,0,.12);height:420px}
+    .ba-container img{display:block;width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
+
+    /* Divider line */
+    .divider{position:absolute;top:0;left:50%;width:var(--divider-w);height:100%;background:linear-gradient(to bottom, rgba(255,255,255,.95), rgba(255,255,255,.65));z-index:50;transform:translateX(-50%)}
+
+    /* After overlay clipped by width/height */
+    .ba-after{position:absolute;left:0;top:0;height:100%;width:50%;overflow:hidden;z-index:10;transition:width .35s cubic-bezier(.2,.9,.2,1)}
+    /* Remove fade-blend mask */
+    .ba-after img{
+      mask-image:none;
+      -webkit-mask-image:none;
+      transition:none;
+      transform:none;
+    }
+
+    /* Handle */
+    .handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--handle-size);height:var(--handle-size);border-radius:50%;background:linear-gradient(145deg,#f4e7c3,#c4a875);border:4px solid #fff;box-shadow:0 8px 30px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;cursor:ew-resize;z-index:60;transition:transform .25s ease, left .25s ease}
+    .handle img.logo{width:54%;height:54%;object-fit:contain;border-radius:50%}
+    .handle:active{transform:translate(-50%,-50%) scale(.98)}
+
+    /* Labels */
+    .label{position:absolute;top:16px;padding:10px 16px;background:rgba(0,0,0,.36);border-radius:10px;font-weight:600;font-size:15px;color:#fff;backdrop-filter:blur(4px);z-index:55}
+    .label.left{left:18px}
+    .label.right{right:18px}
+
+    /* Controls */
+    .controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+    .range{flex:1}
+    input[type=range]{width:100%}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+    .btn.secondary{background:#fff;border:1px solid rgba(11,118,255,.12);color:var(--accent)}
+
+    /* Vertical variant */
+    .vertical{height:420px}
+    .vertical .divider{left:0;top:50%;width:100%;height:var(--divider-w);transform:translateY(-50%)}
+    .vertical .ba-after{width:100%;height:50%;left:0;top:0}
+    .vertical .handle{left:50%;top:50%;transform:translate(-50%,-50%);cursor:ns-resize}
+
+    /* Responsive */
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    @media (max-width:480px){:root{--handle-size:56px} .ba-container{height:320px}}
+  </style>
+</head>
+<body>
+  <h1>Luxury Before / After Slider — Component</h1>
+  <p class="lead">This demo includes: fade-blend, autoplay, logo handle, vertical mode, multiple sliders, and an export button to download HTML/CSS/JS files.</p>
+
+  <div class="grid">
+    <!-- Slider 1: Horizontal (example images provided) -->
+    <div class="ba-wrap">
+      <div class="ba-container" data-orientation="horizontal">
+        <img src="/mnt/data/before.png" alt="Before image">
+        <div class="ba-after"><img src="/mnt/data/after.png" alt="After image"></div>
+        <div class="divider"></div>
+        <div class="label left">Before</div>
+        <div class="label right">After</div>
+        <button class="handle" aria-label="Compare slider" tabindex="0"><img class="logo" src="https://i.imgur.com/6gR7QxS.png" alt="logo"></button>
+      </div>
+      <div class="controls">
+        <input class="range" type="range" min="0" max="100" value="50">
+        <button class="btn secondary toggle-auto">Play</button>
+        <button class="btn download-component">Download component</button>
+      </div>
+    </div>
+
+    <!-- Slider 2: Vertical -->
+    <div class="ba-wrap">
+      <div class="ba-container vertical" data-orientation="vertical">
+        <img src="assets/after 1.jpg" alt="After image">
+        <div class="ba-after"><img src="assets/before 1.jpg" alt="Before image"></div>
+        <div class="divider"></div>
+        <div class="label left">Before</div>
+        <div class="label right">After</div>
+        <button class="handle" aria-label="Compare slider" tabindex="0"><img class="logo" src="assets/Logo--white remove bg jj.png" alt="logo"></button>
+      </div>
+      <div class="controls">
+        <input class="range" type="range" min="0" max="100" value="50">
+        <button class="btn secondary toggle-auto">Play</button>
+        <button class="btn download-component">Download component</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Component JavaScript (also available for download)
+    (function(){
+      function makeSlider(container){
+        const after = container.querySelector('.ba-after');
+        const handle = container.querySelector('.handle');
+        const range = container.parentElement.querySelector('input.range');
+        const toggleBtn = container.parentElement.querySelector('.toggle-auto');
+        const orientation = container.dataset.orientation || 'horizontal';
+        let dragging = false; let rect=null; let autoplayId=null; let autoplayForward=true;
+
+        function recalc(){ rect = container.getBoundingClientRect(); }
+        window.addEventListener('resize', recalc);
+        recalc();
+
+        function setPos(p){
+          p = Math.max(0,Math.min(100,p));
+          if(orientation==='horizontal'){
+            after.style.width = p + '%';
+            handle.style.left = p + '%';
+          } else {
+            after.style.height = p + '%';
+            handle.style.top = p + '%';
+          }
+          // subtle parallax effect
+          const img = after.querySelector('img');
+          if(img) /* no transform (full image static) */
+          if(range) range.value = Math.round(p);
+          if(handle) handle.setAttribute('aria-valuenow', Math.round(p));
+        }
+
+        setPos(50);
+
+        function clientToPercent(clientX, clientY){
+          if(orientation==='horizontal'){
+            const x = clientX - rect.left; return (x / rect.width) * 100;
+          } else {
+            const y = clientY - rect.top; return (y / rect.height) * 100;
+          }
+        }
+
+        // Pointer events
+        handle.addEventListener('pointerdown', e=>{
+          e.preventDefault(); dragging=true; handle.setPointerCapture(e.pointerId); recalc();
+        });
+
+        // We listen on document for move/up to ensure capture works across iframes/touch
+        document.addEventListener('pointermove', e=>{ if(!dragging) return; const p = clientToPercent(e.clientX,e.clientY); setPos(p); });
+        document.addEventListener('pointerup', e=>{ if(!dragging) return; dragging=false; try{ handle.releasePointerCapture && handle.releasePointerCapture(e.pointerId); }catch(err){} });
+
+        // Click container to move
+        container.addEventListener('click', e=>{ if(e.target.closest('.controls')) return; recalc(); const p = clientToPercent(e.clientX,e.clientY); setPos(p); });
+
+        // Range input
+        if(range) range.addEventListener('input', e=> setPos(e.target.value));
+
+        // Keyboard support
+        handle.addEventListener('keydown', e=>{
+          const step = e.shiftKey ? 10 : 2; let value = range ? parseInt(range.value,10) : 50;
+          if(e.key === 'ArrowLeft' || e.key === 'ArrowDown') value -= step;
+          else if(e.key === 'ArrowRight' || e.key === 'ArrowUp') value += step;
+          else if(e.key === 'Home') value = 0; else if(e.key === 'End') value = 100;
+          setPos(value);
+        });
+
+        // Autoplay (ping-pong)
+        function startAutoplay(){ if(autoplayId) return; if(toggleBtn) toggleBtn.textContent='Pause'; let p = range ? parseInt(range.value,10) : 50;
+          autoplayId = setInterval(()=>{
+            if(autoplayForward) p += 2; else p -= 2;
+            if(p>=100){ p=100; autoplayForward=false }
+            if(p<=0){ p=0; autoplayForward=true }
+            setPos(p);
+          },40);
+        }
+        function stopAutoplay(){ if(!autoplayId) return; clearInterval(autoplayId); autoplayId=null; if(toggleBtn) toggleBtn.textContent='Play'; }
+        if(toggleBtn) toggleBtn.addEventListener('click', ()=>{ if(autoplayId) stopAutoplay(); else startAutoplay() });
+
+        // Expose stop for cleanup if needed
+        return {startAutoplay, stopAutoplay};
+      }
+
+      // Initialize all sliders on page
+      const containers = document.querySelectorAll('.ba-container');
+      const instances = [];
+      containers.forEach(c=>instances.push(makeSlider(c)));
+
+      // Download component as separate files (HTML/CSS/JS)
+      function download(filename, content){ const blob = new Blob([content],{type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove(); }
+
+      document.querySelectorAll('.download-component').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          // Build files using safe string concatenation
+          var htmlParts = [];
+          htmlParts.push('<!doctype html>');
+          htmlParts.push('<html lang="en">');
+          htmlParts.push('<head>');
+          htmlParts.push('<meta charset="utf-8">');
+          htmlParts.push('<meta name="viewport" content="width=device-width,initial-scale=1">');
+          htmlParts.push('<title>Before After Slider</title>');
+          htmlParts.push('<link rel="stylesheet" href="beforeafter.css">');
+          htmlParts.push('</head>');
+          htmlParts.push('<body>');
+          htmlParts.push('<div class="ba-container" data-orientation="horizontal">');
+          htmlParts.push('  <img src="before.png">');
+          htmlParts.push('  <div class="ba-after"><img src="after.png"></div>');
+          htmlParts.push('  <div class="divider"></div>');
+          htmlParts.push('  <button class="handle"><img class="logo" src="logo.png"></button>');
+          htmlParts.push('</div>');
+          htmlParts.push('<script src="beforeafter.js"></script>');
+          htmlParts.push('</body>');
+          htmlParts.push('</html>');
+
+          var html = htmlParts.join('\n');
+
+          var css = '/* beforeafter.css - styles for Before/After component */\n'
+            + ':root{--accent:#0b76ff;--radius:24px;--handle-size:70px;--divider-w:3px}\n'
+            + '.ba-container{position:relative;overflow:hidden;border-radius:var(--radius);height:420px}\n'
+            + '.ba-container img{width:100%;height:100%;object-fit:cover}\n'
+            + '.ba-after{position:absolute;left:0;top:0;height:100%;width:50%;overflow:hidden}\n'
+            + '.divider{position:absolute;top:0;left:50%;width:var(--divider-w);height:100%;transform:translateX(-50%)}\n'
+            + '.handle{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--handle-size);height:var(--handle-size);border-radius:50%;display:flex;align-items:center;justify-content:center}';
+
+          var js = '// beforeafter.js - JS for the component\n'
+            + '(function(){\n'
+            + 'function makeSlider(container){\n'
+            + "  var after = container.querySelector('.ba-after');\n"
+            + "  var handle = container.querySelector('.handle');\n"
+            + '  var rect=null;\n'
+            + '  function recalc(){ rect = container.getBoundingClientRect(); }\n'
+            + '  window.addEventListener(\'resize\', recalc); recalc();\n'
+            + '  function setPos(p){ p = Math.max(0,Math.min(100,p)); after.style.width = p + \"%\"; handle.style.left = p + \"%\"; }\n'
+            + '  setPos(50);\n'
+            + "  handle.addEventListener('pointerdown', function(e){ e.preventDefault(); handle.setPointerCapture && handle.setPointerCapture(e.pointerId); var move = function(ev){ var x = ev.clientX - rect.left; setPos((x/rect.width)*100); }; var up = function(){ document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); }; document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); });\n"
+            + '}\n'
+            + 'document.querySelectorAll(\'.ba-container\').forEach(function(c){ makeSlider(c); });\n'
+            + '})();\n';
+
+          download('beforeafter.html', html);
+          download('beforeafter.css', css);
+          download('beforeafter.js', js);
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
